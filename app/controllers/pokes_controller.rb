@@ -5,6 +5,7 @@ class PokesController < ApplicationController
 
   def new
     @poke = Poke.new
+    @client = client
   end
 
   def create
@@ -21,13 +22,16 @@ class PokesController < ApplicationController
 
   private
 
-  def poke_params
-    params.require(:poke).permit(:author_line, :target_username, :content, :is_private)
-  end
 
   def client
     HipChat::Client.new(ENV['HIPCHAT_TOKEN'], :api_version => 'v2')
   end
+
+  def poke_params
+    params.require(:poke).permit(:author_line, :target_username, :content, :is_private)
+  end
+
+
 
 
 end
