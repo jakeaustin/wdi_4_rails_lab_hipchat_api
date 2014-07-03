@@ -11,6 +11,7 @@ class PokesController < ApplicationController
     @poke = Poke.new(poke_params)
 
     if @poke.save
+      client['WDI Boston PokeChat'].send(@poke.author_line, "@#{@poke.target_username} got poked by #{@poke.author_line}: #{poke_url(@poke)}", notify: true, message_format: "text")
       redirect_to @poke, success: 'Target has been poked!'
     else
       flash.now.alert = "Slight problem: #{@poke.errors.full_messages.join(', ')}"
@@ -23,4 +24,10 @@ class PokesController < ApplicationController
   def poke_params
     params.require(:poke).permit(:author_line, :target_username, :content, :is_private)
   end
+
+  def client
+    HipChat::Client.new(ENV['HIPCHAT_TOKEN'], :api_version => 'v2')
+  end
+
+
 end
